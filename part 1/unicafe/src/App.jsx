@@ -16,6 +16,15 @@ const App = () => {
     const handleNeutral = () => {
         setNeutral(neutral+1)
     }
+
+    // Calculate derived statistics
+    const all = good + neutral + bad;
+
+    // Calculate average (avoid division by zero)
+    const average = all === 0 ? 0 : (good - bad) / all;
+
+    // Calculate percentage of positive feedback
+    const positivePercentage = all === 0 ? 0 : (good / all) * 100;
     return (
         <div>
             <h2>Give Feedback</h2>
@@ -25,10 +34,13 @@ const App = () => {
                 <button onClick={handleNeutral}>Neutral</button>
             </div>
 
-            <h2>Statics</h2>
-            <p>Good : {good}</p>
-            <p>Bad : {bad}</p>
-            <p>Neutral : {neutral}</p>
+            <h2>Statistics</h2>
+            <p>good {good}</p>
+            <p>neutral {neutral}</p>
+            <p>bad {bad}</p>
+            <p>all {all}</p>
+            <p>average {average}</p>
+            <p>positive {positivePercentage} %</p>
         </div>
     )
 }
