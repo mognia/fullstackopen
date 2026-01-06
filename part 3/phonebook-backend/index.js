@@ -2,6 +2,9 @@ const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
+require('dotenv').config()
+
+const Person = require('./models/person')
 
 app.use(express.static('dist'))
 app.use(cors())
@@ -38,7 +41,9 @@ let persons = [
 ]
 
 app.get('/api/persons', (req, res) => {
-    res.json(persons)
+    Person.find({}).then((persons) => {
+        res.json(persons)
+    })
 })
 app.get('/info', (req, res) => {
     const count = persons.length;
@@ -65,12 +70,7 @@ app.delete('/api/persons/:id', (req, res) => {
 
     res.status(204).end()
 })
-const generateId = () => {
-    const maxId = persons.length > 0
-        ? Math.max(...persons.map(n => Number(n.id)))
-        : 0
-    return String(maxId + 1)
-}
+
 app.post('/api/persons', (request, response) => {
     const body = request.body
 
@@ -82,21 +82,22 @@ app.post('/api/persons', (request, response) => {
     }
 
     // Check if name already exists
-    const nameExists = persons.find(p => p.name === body.name)
-    if (nameExists) {
-        return response.status(400).json({
-            error: 'name must be unique'
-        })
-    }
+    // const nameExists = persons.find(p => p.name === body.name)
+    // if (nameExists) {
+    //     return response.status(400).json({
+    //         error: 'name must be unique'
+    //     })
+    // }
 
-    const person = {
-        id: generateId(),
+    const person = new Person ({
         name: body.name,
         number: body.number,
-    }
+    })
 
-    persons = persons.concat(person)
-    response.json(person)
+    person.save().then((savedPerson) => {
+
+        response.json(savedPerson)
+    })
 })
 
 const unknownEndpoint = (request, response) => {
