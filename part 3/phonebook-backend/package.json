@@ -7,6 +7,8 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
+    "build:ui": "rm -rf dist && cd ../../part 2/phonebook && npm run build && cp -r dist ../phonebook-backend",
+    "deploy:full": "npm run build:ui && git add . && git commit -m 'build' && git push",
     "dev": "node --watch index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
